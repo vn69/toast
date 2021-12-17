@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast test</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;1,400;1,500&family=Poppins:ital,wght@0,400;0,600;1,200&family=Roboto:ital,wght@0,300;0,400;0,700;1,100;1,300&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+        integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div id="app"></div>
+    <div class="config">
+        <textarea id="input" rows="4" cols="50">your message!</textarea>
+        <input type="text" id="time" value="3000">
+        <label for="fname">time (ms)</label>
+    </div>
+    <div>
+        <button class="btn btn-succsess">show succsess</button>
+        <button class="btn btn-info">show info</button>
+        <button class="btn btn-warning">show warning</button>
+        <button class="btn btn-error">show error</button>
+    </div>
+
+    <!-- code -->
+    <script>
+        const $ = document.querySelector.bind(document)
+        const message = $("#input")
+        const time = $("#time")
+
+        $(".btn-succsess").onclick = function () {
+            const messageInfo = {
+                type: 'succsess',
+                title: 'succsess',
+                message: message.value,
+                duration: Number(time.value)
+            }
+            showToast(messageInfo);
+        }
+        $(".btn-info").onclick = function () {
+            const messageInfo = {
+                type: 'info',
+                title: 'info',
+                message: message.value,
+                duration: Number(time.value)
+            }
+            showToast(messageInfo);
+        }
+        $(".btn-error").onclick = function () {
+            const messageInfo = {
+                type: 'error',
+                title: 'error',
+                message: message.value,
+                duration: Number(time.value)
+            }
+            showToast(messageInfo);
+        }
+        $(".btn-warning").onclick = function () {
+            const messageInfo = {
+                type: 'warning',
+                title: 'warning',
+                message: message.value,
+                duration: Number(time.value)
+            }
+            showToast(messageInfo);
+        }
+
+        function showToast({
+            type = 'info',
+            title = 'info',
+            message = 'message',
+            duration = 3000,
+        }) {
+            const iconClass = {
+                succsess: "fas fa-check-circle",
+                info: "fas fa-info-circle",
+                error: "fas fa-exclamation-circle",
+                warning: "fas fa-exclamation-circle",
+            }
+
+            const toastNode = document.createElement("div");
+            toastNode.style.animation = `fade-out .3s ease ${duration / 1000}s`
+            toastNode.innerHTML = `
+            <div class="toast toast-${type}">
+                <div class="toast__icon">
+                    <i class="${iconClass[type]}"></i>
+                </div>
+                <div class="toast__body">
+                    <h3 class="toast__body_title">${title}</h3>
+                    <div class="toast__body_message">${message}</div>
+                </div>
+                <div class="toast__close">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            `
+            $("#app").appendChild(toastNode)
+            const removeId = setTimeout(() => {
+                removeToast(toastNode)
+                toastNode.remove()
+            }, duration + 300);
+            toastNode.onclick = (e) => {
+                if (e.target.closest('.toast__close')) {
+                    removeToast(toastNode)
+                    clearTimeout(removeId)
+                }
+            }
+        }
+        function removeToast(node) {
+            if (node) {
+                node.style.height = "0px"
+                node.remove();
+            }
+        }
+    </script>
+</body>
+
+</html>
